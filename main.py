@@ -1,16 +1,19 @@
+import random
+import time
+
 from web3 import Web3
 from termcolor import cprint
 import config
 
-
+RPC = "https://arb1.arbitrum.io/rpc"
+web3 = Web3(Web3.HTTPProvider(RPC))
 gasLimit = 3000000
+eth_amount_to_stake = 0.0001
 
 
 def eth_aave_stake(private_key, gasLimit):
     try:
 
-        RPC = "https://arb1.arbitrum.io/rpc"
-        web3 = Web3(Web3.HTTPProvider(RPC))
         account = web3.eth.account.privateKeyToAccount(private_key)
         address_wallet = account.address
 
@@ -22,11 +25,13 @@ def eth_aave_stake(private_key, gasLimit):
         gasPrice = Web3.toWei(0.0000000001, 'ether')
         nonce = web3.eth.get_transaction_count(address_wallet)
 
-        contract_txn = contract.functions.provideToSP(
-            Web3.toWei(0.001, 'ether')
+        contract_txn = contract.functions.depositETH(
+            '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+            str(address_wallet),
+            0
         ).buildTransaction({
             'from': address_wallet,
-            'value': 0,
+            'value': int(Web3.toWei(eth_amount_to_stake, 'ether')),
             'gas': gasLimit,
             'gasPrice': gasPrice,
             'nonce': nonce,
@@ -48,3 +53,4 @@ if __name__ == '__main__':
             cprint(f'\n=============== start : {private_key} ===============', 'white')
 
             eth_aave_stake(private_key, gasLimit)
+            time.sleep(random.randint(10, 60))
