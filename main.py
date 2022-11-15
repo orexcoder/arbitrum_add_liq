@@ -8,7 +8,7 @@ import config
 RPC = "https://arb1.arbitrum.io/rpc"
 web3 = Web3(Web3.HTTPProvider(RPC))
 gasLimit = 3000000
-eth_amount_to_stake = 0.0001
+eth_amount_to_stake = round(random.uniform(0.0001, 0.0003), 6)
 
 
 def eth_aave_stake(private_key, gasLimit):
